@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "682298643968",
+    "project_id": "b2023-gr2sw-vsmc",
+    "storage_bucket": "b2023-gr2sw-vsmc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682298643968:android:cbc7f68207054c5888aae5",
+        "android_client_info": {
+          "package_name": "com.example.b2023gr2sw"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM72NpGs9XT6K22cK26vgaxpag3T_ZaRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
