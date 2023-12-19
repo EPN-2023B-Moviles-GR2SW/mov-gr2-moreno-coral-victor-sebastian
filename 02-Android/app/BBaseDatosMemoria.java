@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class BBaseDatosMemoria {
+public class BBaseDatosMemoria {
+    class BEntrenador{
+        var id: Int
+    }
 }
