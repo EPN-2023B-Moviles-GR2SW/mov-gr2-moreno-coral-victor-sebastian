@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">B2023gr2sw</string>
+    <string name="frase">HOLA</string>
+    <string-array name="string_array_opciones_dialogo">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miercoles</item>
+    </string-array>
+    <string name="title_activity_cintent_explicito_parametros">CIntentExplicitoParametros</string>
+</resources>
