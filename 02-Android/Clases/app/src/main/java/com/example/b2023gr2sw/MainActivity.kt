@@ -76,6 +76,17 @@ class MainActivity : AppCompatActivity() {
             //TO DO
             irActividad(BListView::class.java)
         }
+        val botonRView = findViewById<Button>(R.id.btn_recycler_view)
+        botonRView.setOnClickListener {
+            //TO DO
+            irActividad(FRecyclerView::class.java)
+        }
+        val botonGoogleMaps = findViewById<Button>(R.id.btn_google_maps)
+        botonGoogleMaps
+            .setOnClickListener {
+                irActividad(GGoogleMapsActivity::class.java)
+            }
+
         val botonIntentImplicito = findViewById<Button>(
             R.id.btn_ir_intent_implicito
         )
