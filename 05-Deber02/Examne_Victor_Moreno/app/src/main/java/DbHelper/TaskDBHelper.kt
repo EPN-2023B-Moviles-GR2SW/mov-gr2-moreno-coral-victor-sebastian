@@ -1,4 +1,4 @@
-package com.example.examne_victor_moreno
+package DbHelper
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

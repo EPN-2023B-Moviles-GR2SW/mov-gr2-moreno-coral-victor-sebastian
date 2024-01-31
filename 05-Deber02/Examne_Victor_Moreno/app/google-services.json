@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "877444310002",
+    "project_id": "examenvictor-6d386",
+    "storage_bucket": "examenvictor-6d386.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877444310002:android:d05132031a673fa17a816b",
+        "android_client_info": {
+          "package_name": "com.example.examne_victor_moreno"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDn2GubGah31xt9GHvBO-y1ri31bGk9jFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

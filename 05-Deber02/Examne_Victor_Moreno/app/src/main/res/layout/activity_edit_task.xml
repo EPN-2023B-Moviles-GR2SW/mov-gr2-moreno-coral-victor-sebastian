@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".EditTaskActivity">
+
+    <EditText
+        android:id="@+id/editTextTitle"
+        android:layout_width="322dp"
+        android:layout_height="56dp"
+        android:hint="Título"
+        app:layout_constraintBottom_toTopOf="@+id/editTextDueDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="332dp"
+        android:layout_height="53dp"
+        android:layout_below="@id/editTextTitle"
+        android:hint="Descripción"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.556"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextDueDate"
+        android:layout_width="322dp"
+        android:layout_height="58dp"
+        android:layout_below="@id/editTextDescription"
+        android:hint="Fecha de vencimiento"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerPriority"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.761" />
+
+    <Spinner
+        android:id="@+id/spinnerPriority"
+        android:layout_width="198dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="224dp"
+        android:prompt="@string/priority_prompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.539"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.52" />
+
+    <Button
+        android:layout_width="98dp"
+        android:layout_height="53dp"
+        android:layout_below="@id/spinnerPriority"
+        android:background="#673AB7"
+        android:onClick="updateTask"
+        android:text="Actualizar"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDescription" />
+</androidx.constraintlayout.widget.ConstraintLayout>
