@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Deber03_VictorMoreno</string>
     <string name="title_activity_settings">SettingsActivity</string>
-
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
