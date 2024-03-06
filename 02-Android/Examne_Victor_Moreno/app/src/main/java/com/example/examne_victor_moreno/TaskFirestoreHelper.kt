@@ -1,38 +1,74 @@
 package com.example.examne_victor_moreno
 
+import MyTask
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
+import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class TaskDBHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class TaskFirestoreHelper(context: Context) {
 
     companion object {
-        const val DATABASE_NAME = "tasks.db"
-        const val DATABASE_VERSION = 1
-
-        const val TABLE_NAME = "tasks"
-        const val COLUMN_ID = "_id"
-        const val COLUMN_TITLE = "title"
-        const val COLUMN_DESCRIPTION = "description"
-        const val COLUMN_DUE_DATE = "due_date"
-        const val COLUMN_PRIORITY = "priority"
-
-        const val TABLE_CREATE =
-            "CREATE TABLE $TABLE_NAME (" +
-                    "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "$COLUMN_TITLE TEXT, " +
-                    "$COLUMN_DESCRIPTION TEXT, " +
-                    "$COLUMN_DUE_DATE TEXT, " +
-                    "$COLUMN_PRIORITY INTEGER);"
+        const val COLLECTION_NAME = "tasks"
     }
 
-    override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL(TABLE_CREATE)
+    private val firestore = FirebaseFirestore.getInstance()
+
+    // Agregar una tarea a Firestore
+    fun addTask(myTask: MyTask) {
+        val taskMap = hashMapOf(
+            "title" to myTask.title,
+            "description" to myTask.description,
+            "due_date" to myTask.dueDate,
+            "priority" to myTask.priority
+        )
+
+        firestore.collection(COLLECTION_NAME)
+            .add(taskMap)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-        onCreate(db)
+
+    // Obtener todas las tareas de Firestore
+    fun getAllTasks(): Task<QuerySnapshot> {
+        return firestore.collection(COLLECTION_NAME)
+            .get()
     }
+
+    // Eliminar una tarea de Firestore
+    fun deleteTask(taskId: String) {
+        firestore.collection(COLLECTION_NAME)
+            .document(taskId)
+            .delete()
+    }
+
+    // Actualizar una tarea en Firestore
+    fun updateTask(taskId: String, updatedTask: Map<String, Any>) {
+        firestore.collection(COLLECTION_NAME)
+            .document(taskId)
+            .update(updatedTask)
+    }
+    // Change the return type of getTaskById to Task<MyTask?>
+    fun getTaskById(taskId: String): Task<MyTask?> {
+        return firestore.collection(COLLECTION_NAME).document(taskId).get()
+            .continueWith { task ->
+                if (task.isSuccessful) {
+                    val snapshot = task.result
+                    if (snapshot.exists()) {
+                        val myTask = snapshot.toObject(MyTask::class.java)
+                        myTask
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
+            }
+    }
+
+
+
 }

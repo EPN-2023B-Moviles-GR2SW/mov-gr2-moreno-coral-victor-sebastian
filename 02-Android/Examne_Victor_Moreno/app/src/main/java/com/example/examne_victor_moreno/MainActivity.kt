@@ -1,5 +1,7 @@
 package com.example.examne_victor_moreno
 
+import CreateTaskActivity
+import MyTask
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,43 +15,33 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var taskCrud: TaskCrud
-    private lateinit var taskArrayAdapter: ArrayAdapter<Task>
+    private lateinit var taskFirestoreHelper: TaskFirestoreHelper
+    private lateinit var taskArrayAdapter: ArrayAdapter<MyTask>
     private lateinit var listViewTasks: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inicializar el objeto TaskCrud
-        taskCrud = TaskCrud(this)
-        taskCrud.open()
+        // Inicializa Firebase (esto puede no ser necesario si ya está inicializado en tu aplicación)
+        FirebaseApp.initializeApp(this)
+
+        // Inicializar el objeto TaskFirestoreHelper
+        taskFirestoreHelper = TaskFirestoreHelper(this)
 
         // Obtener la lista de tareas y configurar el adaptador para el ListView
-        val tasks = taskCrud.getAllTasks()
-
         listViewTasks = findViewById(R.id.task_list_view)
+        taskArrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, mutableListOf())
+        listViewTasks.adapter = taskArrayAdapter
 
-        if (tasks.isEmpty()) {
-            // Si no hay tareas, agregar un mensaje en la ListView
-            val emptyMessage = TextView(this)
-            emptyMessage.text = "No hay tareas para mostrar"
-            listViewTasks.addHeaderView(emptyMessage)
-            Log.d("MainActivity", "No hay tareas para mostrar")
-        } else {
-            // Configurar el adaptador si hay tareas
-            taskArrayAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, tasks)
-            listViewTasks.adapter = taskArrayAdapter
-
-            // Agregar el menú contextual al ListView
-            registerForContextMenu(listViewTasks)
-
-            Log.d("MainActivity", "Tareas cargadas en la ListView")
-        }
+        // Agregar el menú contextual al ListView
+        registerForContextMenu(listViewTasks)
 
         // Configurar el botón para ir a la actividad CreateTaskActivity
         val botonAnadirTarea = findViewById<Button>(R.id.buttonAddTask)
@@ -57,33 +49,40 @@ class MainActivity : ComponentActivity() {
             Log.d("MainActivity", "Botón 'Agregar Tarea' presionado")
             irActividad(CreateTaskActivity::class.java)
         }
-    }
 
+        // Cargar las tareas desde Firestore
+        cargarTareasDesdeFirestore()
+    }
     override fun onResume() {
         super.onResume()
         // Actualizar la lista cada vez que la actividad se reanuda
-        val tasks = taskCrud.getAllTasks()
+        cargarTareasDesdeFirestore()
+    }
 
-        if (tasks.isEmpty()) {
-            val emptyMessage = TextView(this)
-            emptyMessage.text = "No hay tareas para mostrar"
-            listViewTasks.addHeaderView(emptyMessage)
-            Log.d("MainActivity", "No hay tareas para mostrar")
-        } else {
-            taskArrayAdapter.clear()
-            taskArrayAdapter.addAll(tasks)
-            taskArrayAdapter.notifyDataSetChanged()
-            Log.d("MainActivity", "Tareas actualizadas en la ListView")
+    private fun cargarTareasDesdeFirestore() {
+        taskFirestoreHelper.getAllTasks().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val tasks = task.result?.toObjects(MyTask::class.java)
+                actualizarListView(tasks)
+            } else {
+                Log.e("MainActivity", "Error al obtener las tareas de Firestore", task.exception)
+            }
         }
     }
 
-    // Método para iniciar una actividad
+    private fun actualizarListView(tasks: List<MyTask>?) {
+        taskArrayAdapter.clear()
+        tasks?.let {
+            taskArrayAdapter.addAll(it)
+        }
+        taskArrayAdapter.notifyDataSetChanged()
+    }
+
     private fun irActividad(clase: Class<*>) {
         Log.d("MainActivity", "Iniciando actividad: ${clase.simpleName}")
         val intent = Intent(this, clase)
         startActivity(intent)
     }
-
     // Método para crear el menú contextual
     override fun onCreateContextMenu(
         menu: ContextMenu?,
@@ -114,7 +113,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun editTask(task: Task?) {
+    private fun editTask(task: MyTask?) {
         // Abre la actividad de edición y pasa la tarea seleccionada
         task?.let {
             val intent = Intent(this, EditTaskActivity::class.java)
@@ -123,7 +122,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun deleteTask(task: Task?) {
+    private fun deleteTask(task: MyTask?) {
         // Muestra un cuadro de diálogo de confirmación antes de eliminar
         task?.let {
             val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
@@ -132,21 +131,14 @@ class MainActivity : ComponentActivity() {
                 .setMessage("¿Estás seguro de que quieres eliminar esta tarea?")
                 .setPositiveButton("Sí") { _, _ ->
                     // Elimina la tarea
-                    taskCrud.deleteTask(it.id)
+                    taskFirestoreHelper.deleteTask(it.id ?: "")
                     // Actualiza la lista después de eliminar
-                    updateTaskList()
+                    cargarTareasDesdeFirestore()
                 }
                 .setNegativeButton("No", null)
                 .show()
         }
     }
 
-    private fun updateTaskList() {
-        // Actualiza la lista cada vez que sea necesario
-        val tasks = taskCrud.getAllTasks()
-        taskArrayAdapter.clear()
-        taskArrayAdapter.addAll(tasks)
-        taskArrayAdapter.notifyDataSetChanged()
-    }
 
 }

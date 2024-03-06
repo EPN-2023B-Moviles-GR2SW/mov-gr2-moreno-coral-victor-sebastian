@@ -1,6 +1,6 @@
 import com.google.firebase.Timestamp
 
-data class Task(
+data class MyTask(
     var id: String? = null,
     var title: String = "",
     var description: String = "",
@@ -11,8 +11,8 @@ data class Task(
     companion object {
         const val COLLECTION_NAME = "tasks"
 
-        fun fromMap(id: String, data: Map<String, Any?>): Task {
-            return Task(
+        fun fromMap(id: String, data: Map<String, Any?>): MyTask {
+            return MyTask(
                 id,
                 data["title"] as? String ?: "",
                 data["description"] as? String ?: "",
